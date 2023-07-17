@@ -7,9 +7,12 @@ import java.util.Map;
 
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -20,18 +23,32 @@ import com.amazonaws.services.schemaregistry.utils.AvroRecordType;
 
 
 @Configuration
+@PropertySource("classpath:kafka.properties")
 public class KafkaConsumerConfig {
+	
+    @Value("${kafka.bootstrap.servers}")
+    private String bootstrapServersConfig;
+    
+    @Value("${sasl.username}")
+    private String saslUsername;
+
+    @Value("${sasl.password}")
+    private String saslPassword;
+    
+    @Value("${aws.region}")
+    private String awsRegion;
+    
     @Bean
     public ConsumerFactory<String, GenericRecord> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "b-2-public.pocmskglue.1teowa.c6.kafka.us-east-1.amazonaws.com:9196,b-1-public.pocmskglue.1teowa.c6.kafka.us-east-1.amazonaws.com:9196");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServersConfig);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "java-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GlueSchemaRegistryKafkaDeserializer.class);
         
         props.put("security.protocol", "SASL_SSL");
         props.put("sasl.mechanism", "SCRAM-SHA-512");
-        props.put("sasl.jaas.config", "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"alice\" password=\"alice-secret\";");
+        props.put("sasl.jaas.config", String.format("org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";", this.saslUsername, this.saslPassword));
         URL truststoreUrl = getClass().getClassLoader().getResource("kafka.client.truststore.jks");
         if (truststoreUrl != null) {
             File truststoreFile = new File(truststoreUrl.getFile());
@@ -40,7 +57,7 @@ public class KafkaConsumerConfig {
         
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         
-        props.put(AWSSchemaRegistryConstants.AWS_REGION, "us-east-1");
+        props.put(AWSSchemaRegistryConstants.AWS_REGION, this.awsRegion);
         props.put(AWSSchemaRegistryConstants.AVRO_RECORD_TYPE, AvroRecordType.GENERIC_RECORD.getName());
         
         return new DefaultKafkaConsumerFactory<>(props);
