@@ -23,6 +23,6 @@ public class KafkaConsumer {
     public void consume(GenericRecord record) {
         String message = record.toString();
         System.out.println("Consumed message: " + message);
-        repository.save(new Message(message));
+        //repository.save(new Message(message));
     }
 }
