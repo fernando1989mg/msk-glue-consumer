@@ -69,7 +69,7 @@ public class KafkaConsumerConfig {
             props.put("ssl.truststore.location", truststoreFile.getAbsolutePath());
         }
         
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         
         props.put(AWSSchemaRegistryConstants.AWS_REGION, this.awsRegion);
         props.put(AWSSchemaRegistryConstants.AVRO_RECORD_TYPE, AvroRecordType.GENERIC_RECORD.getName());
