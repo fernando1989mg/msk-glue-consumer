@@ -21,6 +21,8 @@ import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryKaf
 import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
 import com.amazonaws.services.schemaregistry.utils.AvroRecordType;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+
 
 @Configuration
 @PropertySource("classpath:kafka.properties")
@@ -35,6 +37,12 @@ public class KafkaConsumerConfig {
     @Value("${sasl.password}")
     private String saslPassword;
     
+    @Value("${confluent.registry.name}")
+    private String confluentRegistryName;
+    
+    @Value("${confluent.schema.name}")
+    private String confluentSchemaName;
+    
     @Value("${aws.region}")
     private String awsRegion;
     
@@ -45,6 +53,10 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "java-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GlueSchemaRegistryKafkaDeserializer.class);
+        props.put(AWSSchemaRegistryConstants.SECONDARY_DESERIALIZER, KafkaAvroDeserializer.class.getName());
+        props.put(AWSSchemaRegistryConstants.REGISTRY_NAME, this.confluentRegistryName);
+        props.put(AWSSchemaRegistryConstants.SCHEMA_NAME, this.confluentSchemaName);
+
         
         props.put("security.protocol", "SASL_SSL");
         props.put("sasl.mechanism", "SCRAM-SHA-512");
