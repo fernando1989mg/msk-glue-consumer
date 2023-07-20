@@ -21,7 +21,7 @@ public class KafkaConsumer {
     		topics = "#{'${kafka.topic}'}", 
     		groupId = "#{'${consumer.group}'}")
     public void consume(GenericRecord record) {
-        String message = record.get("message").toString();
+        String message = record.toString();
         System.out.println("Consumed message: " + message);
         repository.save(new Message(message));
     }
