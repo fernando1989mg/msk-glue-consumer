@@ -46,6 +46,12 @@ public class KafkaConsumerConfig {
     @Value("${aws.region}")
     private String awsRegion;
     
+    @Value("${basic.auth.credentials.source}")
+    private String basicAuthCredentialsSource;
+    
+    @Value("${basic.auth.user.info}")
+    private String basicAuthUserInfo;
+    
     @Bean
     public ConsumerFactory<String, GenericRecord> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -56,6 +62,9 @@ public class KafkaConsumerConfig {
         
         props.put(AWSSchemaRegistryConstants.SECONDARY_DESERIALIZER, KafkaAvroDeserializer.class.getName());
         props.put("schema.registry.url", this.confluentRegistryName);
+        props.put("basic.auth.credentials.source", this.basicAuthCredentialsSource);
+        props.put("basic.auth.user.info", this.basicAuthUserInfo);
+
         //props.put(AWSSchemaRegistryConstants.REGISTRY_NAME, this.confluentRegistryName);
         //props.put(AWSSchemaRegistryConstants.SCHEMA_NAME, this.confluentSchemaName);
 
