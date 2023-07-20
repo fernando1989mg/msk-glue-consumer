@@ -19,7 +19,7 @@ public class KafkaConsumer {
 
     @KafkaListener(
     		topics = "#{'${kafka.topic}'}", 
-    		groupId = "java-group2")
+    		groupId = "#{'${consumer.group}'}")
     public void consume(GenericRecord record) {
         String message = record.get("message").toString();
         System.out.println("Consumed message: " + message);
