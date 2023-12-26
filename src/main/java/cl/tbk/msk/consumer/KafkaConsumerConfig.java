@@ -58,7 +58,7 @@ public class KafkaConsumerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServersConfig);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "java-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GlueSchemaRegistryKafkaDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomGlueSchemaRegistryDeserializer.class);
         
         props.put(AWSSchemaRegistryConstants.SECONDARY_DESERIALIZER, KafkaAvroDeserializer.class.getName());
         props.put("schema.registry.url", this.confluentRegistryName);
