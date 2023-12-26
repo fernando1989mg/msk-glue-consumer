@@ -14,6 +14,8 @@ public class CustomGlueSchemaRegistryDeserializer extends GlueSchemaRegistryKafk
 
     @Override
     public Object deserialize(String topic, Headers headers, byte[] data) {
+    	
+    	System.out.println("DESERIALIZANDO...: " + topic);
 
         Object deserializedObject = super.deserialize(topic, headers, data);
 
