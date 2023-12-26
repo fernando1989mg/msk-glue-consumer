@@ -29,15 +29,10 @@ public class KafkaConsumer {
         
         Schema schema = record.getSchema();
 
-        // Imprimir el ID del esquema si está disponible
-        // Nota: Esta parte depende de cómo se maneja el registro de esquemas en tu sistema
-        String schemaId = schema.getProp("schemaId"); // Asumiendo que el ID del esquema se almacena en esta propiedad
-        if (schemaId != null) {
-            System.out.println("Schema ID: " + schemaId);
-        } else {
-            System.out.println("Schema ID not found");
+        System.out.println("Schema Fields: ");
+        for (Schema.Field field : schema.getFields()) {
+            System.out.println("Field Name: " + field.name());
+            System.out.println("Field Type: " + field.schema().getType());
         }
-        
-        System.out.println("Schema Fields: " + schema.getFields());
     }
 }
