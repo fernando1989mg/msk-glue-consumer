@@ -16,6 +16,10 @@ public class CustomGlueSchemaRegistryDeserializer extends GlueSchemaRegistryKafk
     public Object deserialize(String topic, Headers headers, byte[] data) {
     	
     	System.out.println("DESERIALIZANDO...: " + topic);
+    	
+    	for (Header header : headers) {
+            System.out.println("[HEADER] KEY: " + header.key() + "VALUE: " + header.value());
+    	}
 
         Object deserializedObject = super.deserialize(topic, headers, data);
 
